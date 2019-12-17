@@ -2,50 +2,61 @@ var mysql = require("mysql");
 var inquirer = require("inquirer");
 
 var connection = mysql.createConnection({
-host: "localhost",
+    host: "localhost",
 
-port: 3306,
+    port: 3306,
 
-user: "root",
+    user: "root",
 
-password: "password",
-database: "bamazon_DB"
+    password: "password",
+    database: "bamazon_DB"
 });
 
-connection.connect(function(err){
-if (err) throw err;
-console.log("connected as id " + connection.threadId);
-afterConnection();
+connection.connect(function (err) {
+    if (err) throw err;
+    console.log("connected as id " + connection.threadId);
+    askQuestions();
 });
 
 
-function(){
-    inquirer.prompt({
-        name: "IDask",
-        type: "rawlist",
-        message: "What is the ID of the product you're looking for?",
-        choices: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
-    }).then(function(res){
-        inquirer.prompt({
-            name: "quantityAsk",
-            type: "input",
-            message: "How much of that product would you like to buy?"
-        }).then(function(res){
-            var res = 
+function askQuestions() {
+    connection.query("SELECT item_ID FROM products", function (err, results) {
 
-        })
+        if (err) throw err;
+        var itemArray = [];
+        for (var i = 0; i < results.length; i++) {
+            itemArray.push(results[i].item_ID)
+        }
+        inquirer.prompt([
+            {
+                name: "IDask",
+                type: "rawlist",
+                message: "What is the ID of the product you're looking for?",
+                choices: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+            },
+            {
+                name: "quantity",
+                type: "input",
+                message: "How much of that item would you like?"
 
-    })
+            }
+        ]).then(function (answer) {
+            var itemChoice;
+            for (var = i; i < results.length; i++) {
+                if (results[i].item_ID === answer.IDask) {
+                    itemChoice = results[i].item_ID;
+                }
 }
+        if (itemChoice.stock_quantity >= parseInt(answer.quantity)) {
+            return ("Here is your item!");
+        } else {
+            return ("Sorry we are out of the item, please search again")
+        }
+    }
+        )
+}
+    )
+};
 
 
-
-
-
-// function afterConnection() {
-//     connection.query("SELECT * FROM products", function(err,res) {
-//         if (err) throw err;
-//         console.log(res);
-//         connection.end();
-//     });
-// }
+//askQuestion() function in a switch case statement to start inquiry over.
