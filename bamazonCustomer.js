@@ -18,43 +18,76 @@ connection.connect(function (err) {
     askQuestions();
 });
 
+function start(){
+    askQuestions();
+};
 
 function askQuestions() {
-    connection.query("SELECT item_ID FROM products", function (err, results) {
-
+    connection.query("SELECT * FROM products", function (err, results) {
+console.log(results);
+// console.log(mysql.query);
         if (err) throw err;
         var itemArray = [];
+        var quantityArray = [];
         for (var i = 0; i < results.length; i++) {
             itemArray.push(results[i].item_ID)
+            quantityArray.push(results[i].stock_quantity)
         }
         inquirer.prompt([
             {
                 name: "IDask",
                 type: "rawlist",
                 message: "What is the ID of the product you're looking for?",
-                choices: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+                choices: itemArray
             },
             {
                 name: "quantity",
                 type: "input",
-                message: "How much of that item would you like?"
+                message: "How much of that item would you like?",
 
             }
-        ]).then(function (answer) {
-            var itemChoice;
-            for (var = i; i < results.length; i++) {
+        ]).then(function(answer) {
+           console.log("hello")
+            for (var i = 0; i < results.length; i++) {
+
                 if (results[i].item_ID === answer.IDask) {
-                    itemChoice = results[i].item_ID;
+                    
+                 var itemChoice = results[i].item_ID;
+                    console.log(itemChoice);
                 }
-}
-        if (itemChoice.stock_quantity >= parseInt(answer.quantity)) {
-            return ("Here is your item!");
-        } else {
-            return ("Sorry we are out of the item, please search again")
+                if (results[i].stock_quantity >= parseInt(answer.quantity)) {
+                    console.log("Yes")
+                }
+            }
+            if (quantityArray[i] >= parseInt(answer.quantity)) {
+                console.log("yes");
+                return ("Here is your item!");
+            } else {
+                return ("Sorry we are out of the item, please search again")
+             start();
+            }
+        }
+        )
+        function updatedQuantity() {
+            connect.query(
+                "UPDATE products SET ? WHERE ?", function(err, res) {
+                [
+                    {
+                        stock_quantity: -(stock_quantity)
+
+                    },
+
+                    {
+                        product_name: (itemChoice)
+                    }
+                ]
+            })
+                function updateResult(err, res) {
+                    console.log("res.affectedRows");
+                }
+            
         }
     }
-        )
-}
     )
 };
 
