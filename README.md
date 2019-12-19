@@ -36,8 +36,11 @@ My tutor Ryan, class assignments/code drill solutions, Instructor Jerome for som
 
 ![Screenshot of working product](https://github.com/demonaco/Bamazon/blob/master/images/example.gif)
 
+## Showcasing a successful transaction:
 ![Choosing an item ID and quantity](https://github.com/demonaco/Bamazon/blob/master/images/Screen%20Shot%202019-12-18%20at%209.35.31%20PM.png)
 
+## Item ID, quantity, and cost to user demonstrated:
 ![Hilighting the total cost of transaction to user](https://github.com/demonaco/Bamazon/blob/master/images/Screen%20Shot%202019-12-18%20at%209.35.54%20PM.png)
 
+## Showing the difference in stock quantity compared to the table above post-transaction:
 ![After searching for an item and amount, the stock quantity will decrease](https://github.com/demonaco/Bamazon/blob/master/images/Screen%20Shot%202019-12-18%20at%209.36.18%20PM.png)
