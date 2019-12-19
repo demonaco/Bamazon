@@ -29,13 +29,17 @@ console.log("--------------------------------------------------")
 
 function askQuestions() {
     connection.query("SELECT * FROM products", function (err, results) {
-        // console.log(mysql.query);
         if (err) throw err;
+       
         var itemArray = [];
         var quantityArray = [];
+        var priceArray = [];
         for (var i = 0; i < results.length; i++) {
             itemArray.push(results[i].item_ID)
             quantityArray.push(results[i].stock_quantity)
+            priceArray.push(results[i].price)
+            
+            
         }
         inquirer.prompt([
             {
@@ -51,74 +55,51 @@ function askQuestions() {
 
             }
         ]).then(function (answer) { //may want to try adding an object here to give stock quantity a key and value
-            console.log("hello")
+           var selectedItem = itemArray[answer.IDask-1]
+            var selectedQuantity = answer.quantity
+            var queryQuantity = quantityArray[answer.IDask-1]
+            var selectedPrice = priceArray[answer.IDask-1]
             for (var i = 0; i < results.length; i++) {
-
-                if (results[i].item_ID === answer.IDask) {
-
-                    var itemChoice = answer.IDask;
-
-                    console.log(itemChoice);
-
-                } if (itemChoice >= parseInt(answer.quantity)) {
-                    console.log("Yes")
-                    return ("Here is your item!");
-                } else {
-                    return ("Sorry we are out of the item, please search again")
-                    
-                }
-                start();
-            }
-        }) 
-        })
-        }
-        
-//toString?
+                if (selectedItem === results[i].item_ID) {
+                    var itemChoice = results[i].item_ID;
+                    if (queryQuantity >= parseInt(answer.quantity)) {
+                        console.log("Here is your item! That will be " + (selectedQuantity*selectedPrice) + " please!")
+                        var X = queryQuantity - parseInt(selectedQuantity)
+                        updateProduct(itemChoice, X)
+                    } else {
+                        console.log("Sorry we are out of the item, please search again")
+                        
   
+                }
+                } 
+              
+        }
+        })
+        })
+}
 
-//                 if (quantityArray[i] >= parseInt(answer.quantity)) {
-//                     console.log("Yes")
-//                     return ("Here is your item!");
-//                  } else {
-//                 return ("Sorry we are out of the item, please search again")
-//              start();
-//             }
-//         }
-//     } 
-//         function updatedQuantity() {
-//             connect.query(
-//                 "UPDATE products SET ? WHERE ?", function(err, res) {
-//                 [
-//                     {
-//                         stock_quantity: -(stock_quantity)
+function updateProduct(itemChoice, X){
+    //query mysql to update
+    var query = connection.query(
+    "UPDATE products SET ? WHERE ?",[
+    {
+        stock_quantity: X
+    },
+    {
+        item_ID: itemChoice
+    }
+], 
+function(err, res) {
+}
+)
+readResult(); 
+}
 
-//                     },
-
-//                     {
-//                         product_name: (itemChoice)
-//                     }
-//                 ]
-//             })
-//                 function updateResult(err, res) {
-//                     console.log("res.affectedRows");
-//                 }
-
-//         }
-//     }
-//     )
-// };
-
-
-//askQuestion() function in a switch case statement to start inquiry over.
-
-
-// }.then(function SelectQuantity() {
-                //     var requestedQuantity = answer.quantity;
-
-                //     var query = "SELECT stock_quantity FROM products WHERE position ?";
-                //     connection.query(query, [answer.quantity], function (err, results) {
-                //         for (var i = 0; i < results.length; i++) {
-                //             console.log(results[i])
-                //         }
-                //     })
-                // });
+function readResult(){
+    connection.query("SELECT * FROM products", function (err, res) {
+    for (var i = 0; i < res.length; i ++) {
+    console.log(res[i].item_ID + " | " + res[i].product_name + " | " + res[i].department_name + " | " + res[i].price + " | " + res[i].stock_quantity);
+    } askQuestions();
+    console.log("--------------------------------------------------")
+    }) 
+    }
